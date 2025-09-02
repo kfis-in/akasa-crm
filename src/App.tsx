@@ -6,6 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
 import NewLead from "./pages/NewLead";
+import Reports from "./pages/Reports";
+import Pipeline from "./pages/Pipeline";
+import Performance from "./pages/Performance";
+import ExportData from "./pages/ExportData";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +25,11 @@ const App = () => (
           <Route path="/" element={<Dashboard />} />
           <Route path="/leads" element={<Leads />} />
           <Route path="/leads/new" element={<NewLead />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/pipeline" element={<Pipeline />} />
+          <Route path="/performance" element={<Performance />} />
+          <Route path="/export-data" element={<ExportData />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
