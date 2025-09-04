@@ -10,35 +10,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
 import { useGoogleSheets } from '@/hooks/useGoogleSheets'
 import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
-import { Settings, Bell, Shield, Database, Users, Mail, Cloud, Save } from 'lucide-react'
+import { Settings as SettingsIcon, Bell, Shield, Database, Users, Mail, Cloud, Save } from 'lucide-react'
 
 export default function Settings() {
   const [webhookUrl, setWebhookUrl] = useState('')
   const { toast } = useToast()
   const { backupToSheets, isLoading } = useGoogleSheets()
   const { leads } = useRealTimeLeads()
-
-  const handleSaveWebhook = () => {
-    localStorage.setItem('googleSheetsWebhook', webhookUrl)
-    toast({
-      title: "Settings Saved",
-      description: "Google Sheets webhook URL has been saved successfully.",
-    })
-  }
-
-  const handleBackupNow = async () => {
-    if (!webhookUrl) {
-      toast({
-        title: "Error", 
-        description: "Please configure your Google Sheets webhook URL first.",
-        variant: "destructive",
-      })
-      return
-    }
-    await backupToSheets(leads, webhookUrl)
-  }
-
-export default function Settings() {
   const [settings, setSettings] = useState({
     // User Settings
     companyName: 'Lead CRM',
@@ -112,13 +90,33 @@ export default function Settings() {
     })
   }
 
+  const handleSaveWebhook = () => {
+    localStorage.setItem('googleSheetsWebhook', webhookUrl)
+    toast({
+      title: "Settings Saved",
+      description: "Google Sheets webhook URL has been saved successfully.",
+    })
+  }
+
+  const handleBackupNow = async () => {
+    if (!webhookUrl) {
+      toast({
+        title: "Error", 
+        description: "Please configure your Google Sheets webhook URL first.",
+        variant: "destructive",
+      })
+      return
+    }
+    await backupToSheets(leads, webhookUrl)
+  }
+
   return (
     <CRMLayout>
       <div className="min-h-screen bg-gradient-subtle">
         <div className="p-6 space-y-8">
           <div className="flex items-center gap-3 animate-fade-in">
             <div className="p-3 rounded-xl bg-gradient-primary text-white shadow-glow">
-              <Settings className="h-6 w-6" />
+              <SettingsIcon className="h-6 w-6" />
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">Settings</h1>
