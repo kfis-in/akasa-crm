@@ -8,28 +8,28 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Purple & White Theme with Blur Effects */
+    /* Black, White & Purple Theme with Blur Effects */
     --background: 0 0% 100%;
-    --foreground: 260 15% 15%;
+    --foreground: 0 0% 0%;
 
-    --card: 0 0% 100% / 0.8;
-    --card-foreground: 260 15% 15%;
+    --card: 0 0% 100% / 0.9;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100% / 0.95;
-    --popover-foreground: 260 15% 15%;
+    --popover-foreground: 0 0% 0%;
 
     --primary: 270 91% 65%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 280 100% 80%;
     --primary-deep: 260 85% 55%;
 
-    --secondary: 290 85% 70%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 270 20% 98%;
-    --muted-foreground: 270 15% 45%;
+    --muted: 0 0% 98%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 285 100% 75%;
+    --accent: 270 91% 65%;
     --accent-foreground: 0 0% 100%;
 
     --success: 142 76% 36%;
@@ -44,85 +44,104 @@ All colors MUST be HSL.
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 270 20% 90%;
-    --input: 270 20% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 98%;
     --ring: 270 91% 65%;
 
     --radius: 1rem;
 
-    /* Purple Gradients with Blur */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
-    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted)));
-    --gradient-glass: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--accent) / 0.05));
+    /* Black, White & Purple Gradients with Enhanced Blur */
+    --gradient-primary: linear-gradient(135deg, hsl(270 91% 65%), hsl(280 100% 80%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 10%));
+    --gradient-light: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 96%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 100% / 0.95), hsl(270 91% 65% / 0.1));
+    --gradient-blur: linear-gradient(135deg, hsl(0 0% 100% / 0.8), hsl(0 0% 98% / 0.9));
     
-    /* Enhanced Shadows with Purple Glow */
-    --shadow-elegant: 0 20px 50px -15px hsl(var(--primary) / 0.4);
-    --shadow-glow: 0 0 60px hsl(var(--primary-glow) / 0.6);
-    --shadow-card: 0 8px 32px -8px hsl(var(--primary) / 0.2), 0 0 0 1px hsl(var(--border));
-    --shadow-glass: 0 8px 32px 0 hsl(var(--primary) / 0.37);
+    /* Enhanced Blur Shadows */
+    --shadow-elegant: 0 20px 60px -20px hsl(270 91% 65% / 0.4);
+    --shadow-glow: 0 0 80px hsl(270 91% 65% / 0.5);
+    --shadow-card: 0 8px 40px -8px hsl(0 0% 0% / 0.1), 0 0 0 1px hsl(0 0% 90%);
+    --shadow-glass: 0 8px 32px 0 hsl(270 91% 65% / 0.15);
+    --shadow-blur: 0 4px 20px 0 hsl(0 0% 0% / 0.08);
     
     /* Smooth Transitions */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 51 65% 14%;
-    --sidebar-primary: 239 84% 67%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 245 83% 96%;
-    --sidebar-accent-foreground: 51 65% 14%;
-    --sidebar-border: 226 217 228;
-    --sidebar-ring: 239 84% 67%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 270 91% 65%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 270 91% 65%;
   }
 
   .dark {
-    --background: 260 20% 8%;
-    --foreground: 270 20% 95%;
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 260 25% 12% / 0.8;
-    --card-foreground: 270 20% 95%;
+    --card: 0 0% 4% / 0.9;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 260 25% 10% / 0.95;
-    --popover-foreground: 270 20% 95%;
+    --popover: 0 0% 2% / 0.95;
+    --popover-foreground: 0 0% 100%;
 
     --primary: 270 91% 65%;
-    --primary-foreground: 260 20% 8%;
+    --primary-foreground: 0 0% 0%;
     --primary-glow: 280 100% 80%;
     --primary-deep: 260 85% 55%;
 
-    --secondary: 290 85% 70%;
-    --secondary-foreground: 260 20% 8%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 260 25% 15%;
-    --muted-foreground: 270 15% 60%;
+    --muted: 0 0% 6%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 285 100% 75%;
-    --accent-foreground: 260 20% 8%;
+    --accent: 270 91% 65%;
+    --accent-foreground: 0 0% 0%;
 
     --success: 142 76% 36%;
-    --success-foreground: 270 20% 95%;
+    --success-foreground: 0 0% 100%;
     
     --warning: 32 95% 44%;
-    --warning-foreground: 270 20% 95%;
+    --warning-foreground: 0 0% 100%;
     
     --info: 270 91% 65%;
-    --info-foreground: 260 20% 8%;
+    --info-foreground: 0 0% 0%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 270 20% 95%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 260 25% 25%;
-    --input: 260 25% 15%;
+    --border: 0 0% 15%;
+    --input: 0 0% 8%;
     --ring: 270 91% 65%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Black & White Theme Gradients with Purple Accents */
+    --gradient-primary: linear-gradient(135deg, hsl(270 91% 65%), hsl(280 100% 80%));
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 0%), hsl(0 0% 4%));
+    --gradient-light: linear-gradient(135deg, hsl(0 0% 8%), hsl(0 0% 4%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 0%), hsl(0 0% 4%));
+    --gradient-glass: linear-gradient(135deg, hsl(0 0% 0% / 0.95), hsl(270 91% 65% / 0.15));
+    --gradient-blur: linear-gradient(135deg, hsl(0 0% 0% / 0.8), hsl(0 0% 4% / 0.9));
+    
+    /* Enhanced Dark Blur Shadows */
+    --shadow-elegant: 0 20px 60px -20px hsl(270 91% 65% / 0.5);
+    --shadow-glow: 0 0 100px hsl(270 91% 65% / 0.6);
+    --shadow-card: 0 8px 40px -8px hsl(0 0% 0% / 0.4), 0 0 0 1px hsl(0 0% 15%);
+    --shadow-glass: 0 8px 32px 0 hsl(270 91% 65% / 0.25);
+    --shadow-blur: 0 4px 20px 0 hsl(0 0% 0% / 0.3);
+    
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 270 91% 65%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 270 91% 65%;
   }
 }
 
