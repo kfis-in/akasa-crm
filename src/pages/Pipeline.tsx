@@ -1,6 +1,6 @@
 import { CRMLayout } from '@/components/crm/CRMLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useLeads } from '@/hooks/useLeads'
+import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
 import { LeadStatusBadge } from '@/components/crm/LeadStatusBadge'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +11,7 @@ import { LeadStatus } from '@/lib/supabase'
 const statusOrder: LeadStatus[] = ['New', 'Contacted', 'In Progress', 'Won', 'Lost']
 
 export default function Pipeline() {
-  const { leads, isLoading } = useLeads()
+  const { leads, isLoading } = useRealTimeLeads()
 
   if (isLoading) {
     return (

@@ -1,11 +1,11 @@
 import { CRMLayout } from '@/components/crm/CRMLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useLeads } from '@/hooks/useLeads'
+import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
 import { BarChart3, TrendingUp, Users, Target, PieChart, Calendar } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 export default function Reports() {
-  const { leads, isLoading } = useLeads()
+  const { leads, isLoading } = useRealTimeLeads()
 
   if (isLoading) {
     return (

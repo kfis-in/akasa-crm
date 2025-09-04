@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
+import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { useGoogleSheets } from '@/hooks/useGoogleSheets'
 import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
@@ -124,6 +125,174 @@ export default function Settings() {
             </div>
           </div>
           
+          {/* API Integration */}
+          <Card className="backdrop-blur-md bg-card/80 shadow-glass border-0 animate-slide-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-foreground">
+                <Database className="h-5 w-5 text-primary" />
+                API Integration
+              </CardTitle>
+              <CardDescription>
+                Use these REST API endpoints to integrate with external systems.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-gradient-glass border border-primary/20">
+                  <h4 className="font-semibold text-foreground mb-2">Base URL</h4>
+                  <code className="text-sm bg-muted/50 px-2 py-1 rounded">
+                    https://llkgrbmxpzdpqvazpxqv.supabase.co/functions/v1/leads-api
+                  </code>
+                </div>
+
+                <div className="grid gap-4">
+                  <div className="p-4 border border-primary/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-green-500">GET</Badge>
+                      <span className="font-medium">Get All Leads</span>
+                    </div>
+                    <code className="text-sm text-muted-foreground">GET /</code>
+                    <p className="text-sm text-muted-foreground mt-1">Returns all leads with real-time data</p>
+                  </div>
+
+                  <div className="p-4 border border-primary/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-blue-500">POST</Badge>
+                      <span className="font-medium">Create Lead</span>
+                    </div>
+                    <code className="text-sm text-muted-foreground">POST /</code>
+                    <p className="text-sm text-muted-foreground mt-1">Create a new lead with name, email, phone</p>
+                  </div>
+
+                  <div className="p-4 border border-primary/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-orange-500">PUT</Badge>
+                      <span className="font-medium">Update Lead</span>
+                    </div>
+                    <code className="text-sm text-muted-foreground">PUT /?id=lead_id</code>
+                    <p className="text-sm text-muted-foreground mt-1">Update lead information</p>
+                  </div>
+
+                  <div className="p-4 border border-primary/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-red-500">DELETE</Badge>
+                      <span className="font-medium">Delete Lead</span>
+                    </div>
+                    <code className="text-sm text-muted-foreground">DELETE /?id=lead_id</code>
+                    <p className="text-sm text-muted-foreground mt-1">Delete a lead by ID</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Webhook Configuration */}
+          <Card className="backdrop-blur-md bg-card/80 shadow-glass border-0 animate-slide-up">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-foreground">
+                <Mail className="h-5 w-5 text-primary" />
+                Webhook Configuration
+              </CardTitle>
+              <CardDescription>
+                Configure webhooks to receive real-time notifications when leads are created or updated.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                <Label htmlFor="webhook-endpoint" className="text-foreground font-medium">Webhook Endpoint URL</Label>
+                <Input 
+                  id="webhook-endpoint"
+                  placeholder="https://your-app.com/webhook/endpoint"
+                  value={webhookUrl}
+                  onChange={(e) => setWebhookUrl(e.target.value)}
+                  className="backdrop-blur-sm bg-background/80 border-primary/20"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Enter the URL where you want to receive webhook notifications
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gradient-glass border border-primary/20">
+                <h4 className="font-semibold text-foreground mb-2">Webhook Handler URL</h4>
+                <code className="text-sm bg-muted/50 px-2 py-1 rounded">
+                  https://llkgrbmxpzdpqvazpxqv.supabase.co/functions/v1/webhook-handler
+                </code>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Use this URL to trigger webhooks programmatically
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-medium text-foreground">Webhook Payload Example</h4>
+                <div className="p-3 bg-muted/20 rounded-lg">
+                  <pre className="text-xs text-muted-foreground whitespace-pre-wrap">
+{`{
+  "event": "lead_created",
+  "timestamp": "2024-01-01T12:00:00Z",
+  "data": {
+    "id": "lead_id",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+1234567890",
+    "status": "New",
+    "assigned_to": "Sales Team"
+  },
+  "source": "CRM System"
+}`}
+                  </pre>
+                </div>
+              </div>
+              
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handleSaveWebhook}
+                  className="flex-1 shadow-glow bg-gradient-primary"
+                >
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Webhook URL
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (!webhookUrl) {
+                      toast({
+                        title: "Error",
+                        description: "Please enter a webhook URL first",
+                        variant: "destructive"
+                      })
+                      return
+                    }
+                    // Test webhook
+                    fetch('https://llkgrbmxpzdpqvazpxqv.supabase.co/functions/v1/webhook-handler', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        webhook_url: webhookUrl,
+                        event_type: 'test_webhook',
+                        data: { message: 'Test webhook from CRM Settings' }
+                      })
+                    }).then(() => {
+                      toast({
+                        title: "Test Sent",
+                        description: "Test webhook has been sent to your endpoint"
+                      })
+                    }).catch(() => {
+                      toast({
+                        title: "Error",
+                        description: "Failed to send test webhook",
+                        variant: "destructive"
+                      })
+                    })
+                  }}
+                  variant="outline"
+                  className="backdrop-blur-sm bg-background/80"
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Test Webhook
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Google Sheets Integration */}
           <Card className="backdrop-blur-md bg-card/80 shadow-glass border-0 animate-slide-up">
             <CardHeader>

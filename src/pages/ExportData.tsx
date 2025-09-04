@@ -1,7 +1,7 @@
 import { CRMLayout } from '@/components/crm/CRMLayout'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { useLeads } from '@/hooks/useLeads'
+import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Download, FileText, Calendar, Users, Filter, CheckCircle } from 'lucide-react'
@@ -10,7 +10,7 @@ import { toast } from '@/hooks/use-toast'
 import { LeadStatus } from '@/lib/supabase'
 
 export default function ExportData() {
-  const { leads, isLoading } = useLeads()
+  const { leads, isLoading } = useRealTimeLeads()
   const [exportOptions, setExportOptions] = useState({
     includeAll: true,
     statusFilter: [] as LeadStatus[],
