@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { useGoogleSheets } from '@/hooks/useGoogleSheets'
 import { useRealTimeLeads } from '@/hooks/useRealTimeLeads'
+import { WordPressIntegration } from '@/components/crm/WordPressIntegration'
 import { Settings as SettingsIcon, Bell, Shield, Database, Users, Mail, Cloud, Save } from 'lucide-react'
 
 export default function Settings() {
@@ -292,6 +293,9 @@ export default function Settings() {
               </div>
             </CardContent>
           </Card>
+
+          {/* WordPress Integration */}
+          <WordPressIntegration />
 
           {/* Google Sheets Integration */}
           <Card className="backdrop-blur-md bg-card/80 shadow-glass border-0 animate-slide-up">
