@@ -51,11 +51,5 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
-[functions.leads-api]
-verify_jwt = false
-
-[functions.webhook-handler]
-verify_jwt = false
-
 [edge_runtime]
 inspector_port = 8083

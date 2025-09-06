@@ -1,15 +1,40 @@
 import React from 'react'
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { CRMSidebar } from './CRMSidebar'
-import { Search, Bell, Settings } from 'lucide-react'
+import { Search, Bell, Settings, LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/hooks/use-toast'
 
 interface CRMLayoutProps {
   children: React.ReactNode
 }
 
 export function CRMLayout({ children }: CRMLayoutProps) {
+  const { user, signOut } = useAuth()
+  const { toast } = useToast()
+
+  const handleSignOut = async () => {
+    const { error } = await signOut()
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to sign out',
+        variant: 'destructive'
+      })
+    } else {
+      toast({
+        title: 'Success',
+        description: 'Signed out successfully'
+      })
+    }
+  }
+
+  const userEmail = user?.email || 'User'
+  const userInitials = userEmail.split('@')[0].slice(0, 2).toUpperCase()
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-subtle">
@@ -40,15 +65,31 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                 <Button variant="ghost" size="icon">
                   <Settings className="h-5 w-5" />
                 </Button>
-                <div className="flex items-center gap-3 ml-4">
-                  <div className="bg-gradient-primary rounded-full h-8 w-8 flex items-center justify-center text-primary-foreground font-medium">
-                    JD
-                  </div>
-                  <div className="hidden md:block">
-                    <div className="text-sm font-medium">John Doe</div>
-                    <div className="text-xs text-muted-foreground">Sales Manager</div>
-                  </div>
-                </div>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-3 ml-4 h-auto p-2">
+                      <div className="bg-gradient-primary rounded-full h-8 w-8 flex items-center justify-center text-primary-foreground font-medium">
+                        {userInitials}
+                      </div>
+                      <div className="hidden md:block text-left">
+                        <div className="text-sm font-medium">{userEmail}</div>
+                        <div className="text-xs text-muted-foreground">CRM User</div>
+                      </div>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem>
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>

@@ -14,17 +14,44 @@ serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Get the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Authorization header required' 
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Get user from JWT token
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error('Auth error:', authError);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Invalid or expired token' 
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     const url = new URL(req.url);
     const method = req.method;
 
-    console.log(`API Request: ${method} ${url.pathname}`);
+    console.log(`API Request: ${method} ${url.pathname} for user ${user.id}`);
 
     switch (method) {
       case 'GET': {
-        // Get all leads or specific lead
+        // Get user's leads or specific lead
         const leadId = url.searchParams.get('id');
         
         if (leadId) {
@@ -32,6 +59,7 @@ serve(async (req) => {
             .from('leads')
             .select('*')
             .eq('id', leadId)
+            .eq('user_id', user.id)
             .single();
 
           if (error) throw error;
@@ -43,6 +71,7 @@ serve(async (req) => {
           const { data, error } = await supabase
             .from('leads')
             .select('*')
+            .eq('user_id', user.id)
             .order('created_at', { ascending: false });
 
           if (error) throw error;
@@ -54,7 +83,7 @@ serve(async (req) => {
       }
 
       case 'POST': {
-        // Create new lead
+        // Create new lead for authenticated user
         const body = await req.json();
         const { name, email, phone, status = 'New', assigned_to = 'Unassigned' } = body;
 
@@ -70,7 +99,7 @@ serve(async (req) => {
 
         const { data, error } = await supabase
           .from('leads')
-          .insert([{ name, email, phone, status, assigned_to }])
+          .insert([{ name, email, phone, status, assigned_to, user_id: user.id }])
           .select()
           .single();
 
@@ -85,7 +114,7 @@ serve(async (req) => {
       }
 
       case 'PUT': {
-        // Update lead
+        // Update user's lead
         const leadId = url.searchParams.get('id');
         if (!leadId) {
           return new Response(JSON.stringify({ 
@@ -102,6 +131,7 @@ serve(async (req) => {
           .from('leads')
           .update(body)
           .eq('id', leadId)
+          .eq('user_id', user.id)
           .select()
           .single();
 
@@ -115,7 +145,7 @@ serve(async (req) => {
       }
 
       case 'DELETE': {
-        // Delete lead
+        // Delete user's lead
         const leadId = url.searchParams.get('id');
         if (!leadId) {
           return new Response(JSON.stringify({ 
@@ -130,7 +160,8 @@ serve(async (req) => {
         const { error } = await supabase
           .from('leads')
           .delete()
-          .eq('id', leadId);
+          .eq('id', leadId)
+          .eq('user_id', user.id);
 
         if (error) throw error;
 

@@ -1,19 +1,28 @@
 import { useState, useEffect } from 'react'
 import { supabase, Lead, CreateLeadData, UpdateLeadData } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 import { toast } from '@/hooks/use-toast'
 
 export function useLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { user } = useAuth()
 
-  // Fetch all leads
+  // Fetch all leads for current user
   const fetchLeads = async () => {
+    if (!user) {
+      setLeads([])
+      setIsLoading(false)
+      return
+    }
+
     try {
       setIsLoading(true)
       const { data, error } = await supabase
         .from('leads')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
       if (error) throw error
@@ -34,10 +43,24 @@ export function useLeads() {
 
   // Create new lead
   const createLead = async (leadData: CreateLeadData) => {
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to create leads.",
+        variant: "destructive",
+      })
+      throw new Error('User not authenticated')
+    }
+
     try {
+      const newLeadData = {
+        ...leadData,
+        user_id: user.id
+      }
+
       const { data, error } = await supabase
         .from('leads')
-        .insert([leadData])
+        .insert([newLeadData])
         .select()
         .single()
 
@@ -125,8 +148,13 @@ export function useLeads() {
   }
 
   useEffect(() => {
-    fetchLeads()
-  }, [])
+    if (user) {
+      fetchLeads()
+    } else {
+      setLeads([])
+      setIsLoading(false)
+    }
+  }, [user])
 
   return {
     leads,

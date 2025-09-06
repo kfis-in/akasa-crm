@@ -13,6 +13,7 @@ export interface Lead {
   phone: string
   status: LeadStatus
   assigned_to: string
+  user_id: string
   created_at: string
   updated_at: string
 }

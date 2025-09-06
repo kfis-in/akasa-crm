@@ -1,18 +1,27 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
+import { useAuth } from '@/contexts/AuthContext'
 import type { Lead, LeadStatus } from '@/lib/supabase'
 
 export function useRealTimeLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAuth()
 
   useEffect(() => {
-    // Initial fetch
+    if (!user) {
+      setLeads([])
+      setIsLoading(false)
+      return
+    }
+
+    // Initial fetch for current user only
     const fetchLeads = async () => {
       try {
         const { data, error } = await supabase
           .from('leads')
           .select('*')
+          .eq('user_id', user.id)
           .order('created_at', { ascending: false })
 
         if (error) throw error
@@ -31,7 +40,7 @@ export function useRealTimeLeads() {
 
     fetchLeads()
 
-    // Set up real-time subscription
+    // Set up real-time subscription for current user's leads only
     const channel = supabase
       .channel('leads-changes')
       .on(
@@ -39,7 +48,8 @@ export function useRealTimeLeads() {
         {
           event: '*',
           schema: 'public',
-          table: 'leads'
+          table: 'leads',
+          filter: `user_id=eq.${user.id}`
         },
         (payload) => {
           console.log('Real-time update:', payload)
@@ -62,7 +72,7 @@ export function useRealTimeLeads() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [])
+  }, [user])
 
   return { leads, isLoading }
 }
