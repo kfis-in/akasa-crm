@@ -4,8 +4,10 @@ import { CRMSidebar } from './CRMSidebar'
 import { Search, Bell, Settings, LogOut, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/contexts/AuthContext'
+import { useUserRole } from '@/hooks/useUserRole'
 import { useToast } from '@/hooks/use-toast'
 
 interface CRMLayoutProps {
@@ -14,6 +16,7 @@ interface CRMLayoutProps {
 
 export function CRMLayout({ children }: CRMLayoutProps) {
   const { user, signOut } = useAuth()
+  const { role, isAdmin } = useUserRole()
   const { toast } = useToast()
 
   const handleSignOut = async () => {
@@ -74,7 +77,17 @@ export function CRMLayout({ children }: CRMLayoutProps) {
                       </div>
                       <div className="hidden md:block text-left">
                         <div className="text-sm font-medium">{userEmail}</div>
-                        <div className="text-xs text-muted-foreground">CRM User</div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-2">
+                          CRM User
+                          {role && (
+                            <Badge variant={
+                              role === 'admin' ? 'default' :
+                              role === 'manager' ? 'secondary' : 'outline'
+                            } className="text-xs">
+                              {role}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </Button>
                   </DropdownMenuTrigger>

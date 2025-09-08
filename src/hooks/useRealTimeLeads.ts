@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/contexts/AuthContext'
+import { useUserRole } from '@/hooks/useUserRole'
 import type { Lead, LeadStatus } from '@/lib/supabase'
 
 export function useRealTimeLeads() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useAuth()
+  const { isAdmin } = useUserRole()
 
   useEffect(() => {
     if (!user) {
@@ -15,14 +17,20 @@ export function useRealTimeLeads() {
       return
     }
 
-    // Initial fetch for current user only
+    // Initial fetch (all leads for admin, user-specific for regular users)
     const fetchLeads = async () => {
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('leads')
           .select('*')
-          .eq('user_id', user.id)
           .order('created_at', { ascending: false })
+
+        // Regular users only see their own leads, admins see all
+        if (!isAdmin) {
+          query = query.eq('user_id', user.id)
+        }
+
+        const { data, error } = await query
 
         if (error) throw error
         // Type assertion to ensure status is LeadStatus
@@ -40,7 +48,7 @@ export function useRealTimeLeads() {
 
     fetchLeads()
 
-    // Set up real-time subscription for current user's leads only
+    // Set up real-time subscription
     const channel = supabase
       .channel('leads-changes')
       .on(
@@ -49,10 +57,18 @@ export function useRealTimeLeads() {
           event: '*',
           schema: 'public',
           table: 'leads',
-          filter: `user_id=eq.${user.id}`
+          // Only filter by user_id if not admin
+          ...(isAdmin ? {} : { filter: `user_id=eq.${user.id}` })
         },
         (payload) => {
           console.log('Real-time update:', payload)
+          
+          // For admins, show all changes; for users, only show their own
+          const isRelevantChange = isAdmin || 
+            (payload.new && 'user_id' in payload.new && payload.new.user_id === user.id) || 
+            (payload.old && 'user_id' in payload.old && payload.old.user_id === user.id)
+          
+          if (!isRelevantChange) return
           
           if (payload.eventType === 'INSERT') {
             const newLead = { ...payload.new, status: payload.new.status as LeadStatus } as Lead
@@ -72,7 +88,7 @@ export function useRealTimeLeads() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [user])
+  }, [user, isAdmin])
 
   return { leads, isLoading }
 }

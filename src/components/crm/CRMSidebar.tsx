@@ -8,8 +8,10 @@ import {
   Settings, 
   FileText,
   Target,
-  TrendingUp 
+  TrendingUp,
+  Shield 
 } from 'lucide-react'
+import { useUserRole } from '@/hooks/useUserRole'
 
 import {
   Sidebar,
@@ -37,7 +39,7 @@ const analyticsItems = [
 ]
 
 const settingsItems = [
-  { title: "Export Data", url: "/export", icon: FileText },
+  { title: "Export Data", url: "/export-data", icon: FileText },
   { title: "Settings", url: "/settings", icon: Settings },
 ]
 
@@ -45,6 +47,7 @@ export function CRMSidebar() {
   const { state } = useSidebar()
   const location = useLocation()
   const currentPath = location.pathname
+  const { isAdmin, role } = useUserRole()
   
   const isCollapsed = state === "collapsed"
   
@@ -143,6 +146,30 @@ export function CRMSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sidebar-foreground/60 uppercase tracking-wider text-xs font-semibold">
+              {!isCollapsed && "Admin"}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild className="h-10">
+                    <NavLink 
+                      to="/admin" 
+                      end 
+                      className={getNavClass("/admin")}
+                    >
+                      <Shield className="h-5 w-5" />
+                      {!isCollapsed && <span className="ml-3">Admin Panel</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
     </Sidebar>
   )

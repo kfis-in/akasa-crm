@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase, Lead, CreateLeadData, UpdateLeadData } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { useUserRole } from '@/hooks/useUserRole'
 import { toast } from '@/hooks/use-toast'
 
 export function useLeads() {
@@ -8,8 +9,9 @@ export function useLeads() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { user } = useAuth()
+  const { isAdmin } = useUserRole()
 
-  // Fetch all leads for current user
+  // Fetch leads (all for admin, user-specific for regular users)
   const fetchLeads = async () => {
     if (!user) {
       setLeads([])
@@ -19,11 +21,17 @@ export function useLeads() {
 
     try {
       setIsLoading(true)
-      const { data, error } = await supabase
+      let query = supabase
         .from('leads')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
+
+      // Regular users only see their own leads, admins see all
+      if (!isAdmin) {
+        query = query.eq('user_id', user.id)
+      }
+
+      const { data, error } = await query
 
       if (error) throw error
       setLeads(data || [])
@@ -154,7 +162,7 @@ export function useLeads() {
       setLeads([])
       setIsLoading(false)
     }
-  }, [user])
+  }, [user, isAdmin])
 
   return {
     leads,
